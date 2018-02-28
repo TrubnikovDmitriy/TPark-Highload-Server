@@ -8,13 +8,19 @@ public class HttpRequest {
 
 	public HttpRequest(String data) {
 
+		final String[] httpRequest = data.split("\n", 2);
+		if (httpRequest.length == 0) {
+			throw new RuntimeException("Invalid HTTP request: " + data);
+		}
+
 		// Отделяем первую строчку от заголовков
 		this.ri = parseRequestLine(data.split("\n", 2)[0]);
-		final String headerFields = data.split("\n", 2)[1];
 
-		// Парсим заголовки в хеш-мапу
-		for (String headerField : headerFields.split("\n")) {
-			ri.putHeader(headerField.split(": ", 2));
+		if (httpRequest.length > 1) {
+			// Парсим заголовки в хеш-мапу
+			for (String headerField : httpRequest[1].split("\n")) {
+				ri.putHeader(headerField.split(": ", 2));
+			}
 		}
 	}
 
@@ -28,5 +34,10 @@ public class HttpRequest {
 				mainInfo[1], // URI
 				mainInfo[2]  // version
 		);
+	}
+
+
+	public RequestInfo getRequestInfo() {
+		return ri;
 	}
 }

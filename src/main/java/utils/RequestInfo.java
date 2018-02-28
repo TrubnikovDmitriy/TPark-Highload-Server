@@ -35,7 +35,7 @@ public class RequestInfo {
 		return method;
 	}
 
-	public String getUri() {
+	public String getURI() {
 		return uri;
 	}
 
