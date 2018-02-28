@@ -8,12 +8,8 @@ public class HttpRequest {
 
 	public HttpRequest(String data) {
 
-		final String[] httpRequest = data.split("\n", 2);
-		if (httpRequest.length == 0) {
-			throw new RuntimeException("Invalid HTTP request: " + data);
-		}
-
 		// Отделяем первую строчку от заголовков
+		final String[] httpRequest = data.split("\n", 2);
 		this.ri = parseRequestLine(data.split("\n", 2)[0]);
 
 		if (httpRequest.length > 1) {
@@ -29,6 +25,9 @@ public class HttpRequest {
 		// examle: "GET /hello/world HTTP/1.1"
 		final String[] mainInfo = requestLine.split(" ", 3);
 
+		if (mainInfo.length < 3) {
+			throw new RuntimeException("Invalid HTTP request line: " + requestLine);
+		}
 		return new RequestInfo(
 				mainInfo[0], // method
 				mainInfo[1], // URI

@@ -28,8 +28,10 @@ public class TestHttpRequestParse extends Assert {
 
 	@Before
 	public void setUp() {
-		this.request = new HttpGet("/path");
-		this.request.addHeader("key", "value");
+		request = new HttpGet("/path");
+		request.addHeader("key", "value");
+		request.addHeader("main_question", "42");
+		request.addHeader("FOO", "BAR");
 	}
 
 	@Test
@@ -46,14 +48,9 @@ public class TestHttpRequestParse extends Assert {
 	public void testHeaders() {
 
 		final StringBuilder builder = new StringBuilder(request.toString() + '\n');
-		request.addHeader("key", "value");
-		request.addHeader("main_question", "42");
-		request.addHeader("FOO", "BAR");
-
 		for (Header header : request.getAllHeaders()) {
 			builder.append(header.toString()).append('\n');
 		}
-
 
 		final RequestInfo ri = new HttpRequest(builder.toString()).getRequestInfo();
 		for (Header header : request.getAllHeaders()) {
@@ -61,5 +58,15 @@ public class TestHttpRequestParse extends Assert {
 			final String value = header.getValue();
 			assertEquals(ri.getHeader(key), value);
 		}
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testEmptyRequest() {
+		new HttpRequest("");
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testNotEnougthParametres() {
+		new HttpRequest("GET /without/version");
 	}
 }
