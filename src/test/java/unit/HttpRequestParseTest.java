@@ -11,9 +11,11 @@ import org.junit.rules.Timeout;
 import org.apache.http.client.methods.HttpGet;
 import request.HttpRequest;
 import request.RequestData;
+import utils.HttpUtils;
 
 
 import java.util.concurrent.TimeUnit;
+
 
 public class HttpRequestParseTest extends Assert {
 
@@ -47,9 +49,9 @@ public class HttpRequestParseTest extends Assert {
 	@Test
 	public void testHeaders() {
 
-		final StringBuilder builder = new StringBuilder(request.toString() + '\n');
+		final StringBuilder builder = new StringBuilder(request.toString() + HttpUtils.CLRF);
 		for (Header header : request.getAllHeaders()) {
-			builder.append(header.toString()).append('\n');
+			builder.append(header.toString()).append(HttpUtils.CLRF);
 		}
 
 		final RequestData ri = new HttpRequest(builder.toString()).getRequestData();
