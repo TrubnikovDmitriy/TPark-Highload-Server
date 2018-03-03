@@ -1,20 +1,24 @@
-package utils;
+package request;
 
 import java.util.HashMap;
 
 
-public class RequestInfo {
+public class RequestData {
 
 	private final String method;
 	private final String uri;
 	private final String version;
 	private final HashMap<String, String> headers;
 
-	public RequestInfo(String method, String uri, String version) {
+	public RequestData(String method, String uri, String version) {
 		this.method = method;
 		this.uri = uri;
 		this.version = version;
 		this.headers = new HashMap<String, String>();
+	}
+
+	public boolean isMethodAllowed() {
+		return method.equals("GET") || method.equals("HEAD");
 	}
 
 

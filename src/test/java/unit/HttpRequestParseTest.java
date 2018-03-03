@@ -1,8 +1,7 @@
 package unit;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpPost;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,12 +10,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 import org.apache.http.client.methods.HttpGet;
 import request.HttpRequest;
-import utils.RequestInfo;
+import request.RequestData;
 
 
 import java.util.concurrent.TimeUnit;
 
-public class TestHttpRequestParse extends Assert {
+public class HttpRequestParseTest extends Assert {
 
 	private HttpGet request;
 
@@ -25,6 +24,7 @@ public class TestHttpRequestParse extends Assert {
 
 	@Rule
 	public final Timeout timeout = new Timeout(1, TimeUnit.SECONDS);
+
 
 	@Before
 	public void setUp() {
@@ -37,7 +37,7 @@ public class TestHttpRequestParse extends Assert {
 	@Test
 	public void testRequestLine() {
 
-		final RequestInfo ri = new HttpRequest(request.toString()).getRequestInfo();
+		final RequestData ri = new HttpRequest(request.toString()).getRequestData();
 
 		assertEquals(ri.getMethod(), request.getMethod());
 		assertEquals(ri.getURI(), request.getURI().toString());
@@ -52,12 +52,21 @@ public class TestHttpRequestParse extends Assert {
 			builder.append(header.toString()).append('\n');
 		}
 
-		final RequestInfo ri = new HttpRequest(builder.toString()).getRequestInfo();
+		final RequestData ri = new HttpRequest(builder.toString()).getRequestData();
 		for (Header header : request.getAllHeaders()) {
 			final String key = header.getName();
 			final String value = header.getValue();
 			assertEquals(ri.getHeader(key), value);
 		}
+	}
+
+	@Test
+	public void testPost() {
+
+		final HttpPost post = new HttpPost("/uri");
+		final RequestData ri = new HttpRequest(post.toString()).getRequestData();
+
+		assertFalse(ri.isMethodAllowed());
 	}
 
 	@Test(expected = RuntimeException.class)
