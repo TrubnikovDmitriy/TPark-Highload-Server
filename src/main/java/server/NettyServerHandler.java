@@ -8,17 +8,23 @@ import response.HttpResponse;
 import request.RequestData;
 import response.ResponseData;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) {
+	public void channelRead(ChannelHandlerContext ctx, Object msg)
+			throws UnsupportedEncodingException {
 
 		final ByteBuf data = (ByteBuf) msg;
-		// TODO Кодировка (буквы 'М','у' и др.)
-		final RequestData request = new HttpRequest(
-				data.toString(CharsetUtil.ISO_8859_1)).getRequestData();
+		final String decodeData = URLDecoder.decode(
+				data.toString(CharsetUtil.UTF_8), CharsetUtil.UTF_8.toString());
+
+		final RequestData request = new HttpRequest(decodeData).getRequestData();
 		final ResponseData response = new HttpResponse(request).getResponseData();
+
 		final String payload = response.toString();
 
 		final ByteBuf respData = ctx.alloc().buffer(payload.length());

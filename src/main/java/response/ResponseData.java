@@ -1,12 +1,13 @@
 package response;
 
+import utils.HttpUtils;
+
 import java.io.File;
 
 public class ResponseData {
 
 	private final StringBuilder headers = new StringBuilder();
 	private final StringBuilder status = new StringBuilder();
-	private static final String CLRF = "\r\n";
 	private File file;
 
 	public ResponseData(String httpVersion) {
@@ -19,7 +20,7 @@ public class ResponseData {
 
 	public void setHeader(String header, String value) {
 		headers.append(header).append(": ")
-				.append(value).append(CLRF);
+				.append(value).append(HttpUtils.CLRF);
 	}
 
 	public void setFile(File file) {
@@ -33,9 +34,9 @@ public class ResponseData {
 	@Override
 	public String toString() {
 		return status
-				.append(CLRF)
+				.append(HttpUtils.CLRF)
 				.append(headers)
-				.append(CLRF)
+				.append(HttpUtils.CLRF)
 				.toString();
 	}
 }
