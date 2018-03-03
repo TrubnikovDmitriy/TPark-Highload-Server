@@ -1,5 +1,6 @@
 package server;
 
+import config.Config;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,11 +10,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+
 public class NettyServer {
 
 	private final int port;
 	private final int MASTER_COUNT = 1;
-	private final int WORKER_COUNT = 4;
 
 
 	public NettyServer(int port) {
@@ -23,7 +24,7 @@ public class NettyServer {
 	public void run() throws InterruptedException{
 
 		final EventLoopGroup masterGroup = new NioEventLoopGroup(MASTER_COUNT);
-		final EventLoopGroup workerGroup = new NioEventLoopGroup(WORKER_COUNT);
+		final EventLoopGroup workerGroup = new NioEventLoopGroup(Config.getCpu());
 
 		try {
 
@@ -37,7 +38,7 @@ public class NettyServer {
 						}
 					})
 					.option(ChannelOption.SO_BACKLOG, 128)
-					.childOption(ChannelOption.SO_KEEPALIVE, true);
+					.childOption(ChannelOption.SO_KEEPALIVE, false);
 
 			final ChannelFuture f = server.bind(port).sync();
 			f.channel().closeFuture().sync();

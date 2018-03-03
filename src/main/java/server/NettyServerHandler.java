@@ -31,9 +31,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 		respData.writeBytes(payload.getBytes());
 
 		final ChannelFuture f;
-		if (response.getFile() == null) {
+		if (response.getFile() == null || request.isMethodHead()) {
 			f = ctx.writeAndFlush(respData);
-
 		} else {
 			ctx.write(respData);
 			f = ctx.writeAndFlush(new DefaultFileRegion(

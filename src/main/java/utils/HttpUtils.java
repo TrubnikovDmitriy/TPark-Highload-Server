@@ -6,6 +6,11 @@ import java.time.format.DateTimeFormatter;
 
 public class HttpUtils {
 
+	public static final int DEFAULT_PORT = 5555;
+	public static final int DEFAULT_CPU = 2;
+	public static final String DEFAULT_ROOT = ".";
+
+
 	public static final String CLRF = "\r\n";
 	public static final String HTTP_VERSION_1_1 = "HTTP/1.1";
 

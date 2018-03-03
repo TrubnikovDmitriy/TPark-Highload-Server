@@ -21,6 +21,10 @@ public class RequestData {
 		return method.equals("GET") || method.equals("HEAD");
 	}
 
+	public boolean isMethodHead() {
+		return method.equals("HEAD");
+	}
+
 
 	public String getHeader(String key) {
 		return headers.get(key);

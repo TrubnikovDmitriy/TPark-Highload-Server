@@ -1,5 +1,6 @@
 package response;
 
+import config.Config;
 import utils.HttpUtils;
 import request.RequestData;
 
@@ -15,9 +16,9 @@ public class HttpResponse {
 	public HttpResponse(RequestData requestData) {
 
 		this.requestData = requestData;
-		final File checkFile = new File(System.getenv("PWD") + requestData.getURI());
+		final File checkFile = new File(Config.getRoot() + requestData.getURI());
 		file = checkFile.isFile() ? checkFile :
-				new File(System.getenv("PWD") + requestData.getURI() + "/index.html");
+				new File(Config.getRoot() + requestData.getURI() + "/index.html");
 
 		responseData = new ResponseData(HttpUtils.HTTP_VERSION_1_1);
 

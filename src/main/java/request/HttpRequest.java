@@ -2,7 +2,6 @@ package request;
 
 import utils.HttpUtils;
 
-import java.net.URLEncoder;
 
 public class HttpRequest {
 

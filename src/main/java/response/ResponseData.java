@@ -4,6 +4,7 @@ import utils.HttpUtils;
 
 import java.io.File;
 
+
 public class ResponseData {
 
 	private final StringBuilder headers = new StringBuilder();
