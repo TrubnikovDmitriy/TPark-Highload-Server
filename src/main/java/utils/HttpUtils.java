@@ -15,6 +15,7 @@ public class HttpUtils {
 	public static final String HTTP_VERSION_1_1 = "HTTP/1.1";
 
 	public static final String STATUS_OK = "200 OK";
+	public static final String STATUS_FORBIDDEN = "403 Forbidden";
 	public static final String STATUS_NOT_FOUND = "404 Not Found";
 	public static final String STATUS_NOT_ALLOWED = "405 Method Not Allowed";
 

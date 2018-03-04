@@ -19,9 +19,10 @@ public class ResponseData {
 		status.append(httpStatus);
 	}
 
-	public void setHeader(String header, String value) {
+	public ResponseData setHeader(String header, String value) {
 		headers.append(header).append(": ")
 				.append(value).append(HttpUtils.CLRF);
+		return this;
 	}
 
 	public void setFile(File file) {

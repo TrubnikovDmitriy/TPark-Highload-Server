@@ -1,6 +1,10 @@
 package request;
 
+import io.netty.util.CharsetUtil;
 import utils.HttpUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 
 public class HttpRequest {
@@ -23,22 +27,31 @@ public class HttpRequest {
 
 	private RequestData parseRequestLine(String requestLine) {
 
-		// examle: "GET /hello world?query=42 HTTP/1.1"
-		final String[] mainInfo = requestLine.split(" ", 2);
-		final String method = mainInfo[0];
-
-		final Integer indexOfVersion = mainInfo[1].lastIndexOf("HTTP");
-		if (indexOfVersion == -1) {
+		// examle: "GET /hello%20world?query=42 HTTP/1.1"
+		final String[] mainInfo = requestLine.split(" ", 3);
+		if (mainInfo.length < 3) {
 			throw new RuntimeException("Invalid HTTP request line: " + requestLine);
 		}
-		final String version = mainInfo[1].substring(indexOfVersion);
-		final String uri = mainInfo[1]
-				.substring(0, indexOfVersion)
-				.split("\\?")[0]  // drop query-parameters
-				.replace("/..", "")
-				.trim();
 
-		return new RequestData(method, uri, version);
+		return new RequestData(
+				mainInfo[0], // method
+				handleURI(mainInfo[1]), // URI
+				mainInfo[2]  // version
+		);
+	}
+
+	private String handleURI(String rowURI) {
+
+		// Handle the URI: delete '/..', drop query-parameters and etc.
+		final String treatedURI = rowURI
+				.split("\\?")[0]
+				.replace("/..", "");
+
+		try {
+			return URLDecoder.decode(treatedURI, CharsetUtil.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public RequestData getRequestData() {

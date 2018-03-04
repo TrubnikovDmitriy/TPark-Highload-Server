@@ -10,21 +10,14 @@ import java.io.File;
 public class HttpResponse {
 
 	private final ResponseData responseData;
-	private final RequestData requestData;
-	private final File file;
+	private File file;
 
 	public HttpResponse(RequestData requestData) {
 
-		this.requestData = requestData;
-		final File checkFile = new File(Config.getRoot() + requestData.getURI());
-		file = checkFile.isFile() ? checkFile :
-				new File(Config.getRoot() + requestData.getURI() + "/index.html");
-
-		responseData = new ResponseData(HttpUtils.HTTP_VERSION_1_1);
-
-		responseData.setHeader(HttpUtils.HEADER_SERVER, HttpUtils.SERVER_NAME);
-		responseData.setHeader(HttpUtils.HEADER_CONNECTION, HttpUtils.CONNECTON_CLOSE);
-		responseData.setHeader(HttpUtils.HEADER_DATE, HttpUtils.getDateRFC1123());
+		responseData = new ResponseData(HttpUtils.HTTP_VERSION_1_1)
+				.setHeader(HttpUtils.HEADER_SERVER, HttpUtils.SERVER_NAME)
+				.setHeader(HttpUtils.HEADER_CONNECTION, HttpUtils.CONNECTON_CLOSE)
+				.setHeader(HttpUtils.HEADER_DATE, HttpUtils.getDateRFC1123());
 
 
 		if (!requestData.isMethodAllowed()) {
@@ -32,9 +25,23 @@ public class HttpResponse {
 			return;
 		}
 
+		// If directory/file does not exist, the error 404 returned
+		file = new File(Config.getRoot() + requestData.getURI());
 		if (!file.exists()) {
 			responseData.setHttpStatus(HttpUtils.STATUS_NOT_FOUND);
 			return;
+		}
+
+		if (file.isDirectory()) {
+			// If the directory is requested, it is return index.html of this directory
+			file = new File(Config.getRoot() + requestData.getURI() + "/index.html");
+
+			// If index.html does not exist, the error 403 returned
+			// (странное поведение, но так требуют тестовые кейсы)
+			if (!file.exists()) {
+				responseData.setHttpStatus(HttpUtils.STATUS_FORBIDDEN);
+				return;
+			}
 		}
 
 		responseData.setHttpStatus(HttpUtils.STATUS_OK);
