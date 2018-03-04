@@ -23,17 +23,22 @@ public class HttpRequest {
 
 	private RequestData parseRequestLine(String requestLine) {
 
-		// examle: "GET /hello/world?query=42 HTTP/1.1"
-		final String[] mainInfo = requestLine.split(" ", 3);
+		// examle: "GET /hello world?query=42 HTTP/1.1"
+		final String[] mainInfo = requestLine.split(" ", 2);
+		final String method = mainInfo[0];
 
-		if (mainInfo.length < 3) {
+		final Integer indexOfVersion = mainInfo[1].lastIndexOf("HTTP");
+		if (indexOfVersion == -1) {
 			throw new RuntimeException("Invalid HTTP request line: " + requestLine);
 		}
-		return new RequestData(
-				mainInfo[0], // method
-				mainInfo[1].split("\\?")[0], // URI
-				mainInfo[2]  // version
-		);
+		final String version = mainInfo[1].substring(indexOfVersion);
+		final String uri = mainInfo[1]
+				.substring(0, indexOfVersion)
+				.split("\\?")[0]  // drop query-parameters
+				.replace("/..", "")
+				.trim();
+
+		return new RequestData(method, uri, version);
 	}
 
 	public RequestData getRequestData() {

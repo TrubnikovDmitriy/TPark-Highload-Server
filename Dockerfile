@@ -11,6 +11,7 @@ RUN apt-get install -y maven
 ENV WORK /opt
 ADD . $WORK/server
 RUN mkdir -p /var/www/html
+RUN touch /etc/httpd.conf
 
 
 WORKDIR $WORK/server
