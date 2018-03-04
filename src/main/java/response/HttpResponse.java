@@ -16,7 +16,7 @@ public class HttpResponse {
 
 		responseData = new ResponseData(HttpUtils.HTTP_VERSION_1_1)
 				.setHeader(HttpUtils.HEADER_SERVER, HttpUtils.SERVER_NAME)
-				.setHeader(HttpUtils.HEADER_CONNECTION, HttpUtils.CONNECTON_CLOSE)
+				.setHeader(HttpUtils.HEADER_CONNECTION, HttpUtils.CONNECTON_KEEP)
 				.setHeader(HttpUtils.HEADER_DATE, HttpUtils.getDateRFC1123());
 
 

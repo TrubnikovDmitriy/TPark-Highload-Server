@@ -3,6 +3,7 @@ package server;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
+import io.netty.util.ReferenceCountUtil;
 import request.HttpRequest;
 import response.HttpResponse;
 import request.RequestData;
@@ -33,6 +34,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 					response.getFile(), 0, response.getFile().length()));
 		}
 		f.addListener(ChannelFutureListener.CLOSE);
+		ReferenceCountUtil.release(msg);
 	}
 
 	@Override

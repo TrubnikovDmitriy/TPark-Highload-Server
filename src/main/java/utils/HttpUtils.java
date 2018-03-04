@@ -27,7 +27,7 @@ public class HttpUtils {
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 
 	public static final String SERVER_NAME = "d.trubnikov";
-	public static final String CONNECTON_CLOSE = "close";
+	public static final String CONNECTON_KEEP = "keep-alive";
 	public static String getDateRFC1123() {
 		return ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
 	}
