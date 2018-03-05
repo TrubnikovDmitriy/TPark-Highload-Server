@@ -15,7 +15,7 @@ public class NettyServer {
 
 	private final int port;
 	private static final int BACKLOG_QUEUE = 1024;
-	private static final int EPOLL_WORKERS = 2;
+	private static final int MASTER_WORKERS = 1;
 
 	public NettyServer(int port) {
 		this.port = port;
@@ -23,12 +23,12 @@ public class NettyServer {
 
 	public void run() throws InterruptedException{
 
-		final EventLoopGroup workers =
-				new EpollEventLoopGroup(Math.min(EPOLL_WORKERS, Config.getCpu()));
+		final EventLoopGroup masters = new EpollEventLoopGroup(MASTER_WORKERS);
+		final EventLoopGroup workers = new EpollEventLoopGroup(Config.getCpu());
 		try {
 
 			final ServerBootstrap server = new ServerBootstrap();
-			server.group(workers)
+			server.group(masters, workers)
 					.channel(EpollServerSocketChannel.class)
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
@@ -43,6 +43,7 @@ public class NettyServer {
 			f.channel().closeFuture().sync();
 
 		} finally {
+			masters.shutdownGracefully();
 			workers.shutdownGracefully();
 		}
 	}
